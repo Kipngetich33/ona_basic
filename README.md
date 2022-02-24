@@ -1,9 +1,6 @@
 # basic-flask-template
 A barebone Flask app using Flask and Bootstrap (v4.4.1).
 
-
-![alt text](https://github.com/petersimeth/basic-flask-template/blob/master/flask_screenshot.png?raw=true)
-
 ## Running Locally
 
 Make sure you have Python installed

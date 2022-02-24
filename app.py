@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 from flask import Flask, render_template
+import requests
 
 DEVELOPMENT_ENV  = True
 
@@ -19,8 +19,19 @@ app_data = {
 
 @app.route('/')
 def index():
-    return render_template('index.html', app_data=app_data)
+    #get data from url
+    ona_data = requests.get('https://api.ona.io/api/v1/data/650907', auth=('kipngetich33', 'Empharse333'))
+    return render_template('index.html', app_data=ona_data.json())
 
+
+@app.route('/ona_data',methods=["GET","POST"])
+def ona_dat_view():
+    print("*"*80)
+    print("ona view")
+    #get data from url
+    ona_data = requests.get('https://api.ona.io/api/v1/data/650907', auth=('kipngetich33', 'Empharse333'))
+    return {'data': ona_data.json()}
+   
 
 @app.route('/about')
 def about():

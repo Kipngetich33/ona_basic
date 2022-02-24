@@ -1,13 +1,59 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-<div class="jumbotron">
-    <h1 class="display-4">Bootstrap starter template by {{ app_data['author'] }} </h1>
-    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-    <p>Title: {{ app_data['html_title'] }}</p>
-
-    <hr class="my-4">
-    <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-    <a class="btn btn-primary btn-lg" href="/contact" role="button">Contact</a>
+  <div class="jumbotron">
+    <h2>Customer Map</h2>
+    <div id="map" style="height: 400px;"></div>
   </div>
+
+  <div class="jumbotron">
+    <h2>Ona Data Table</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Full Name</th>
+          <th scope="col">County</th>
+          <th scope="col">Priority Program</th>
+          <th scope="col">Preffered Budget(%)</th>
+          <th scope="col">Location(x,y)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for data in app_data %}
+        <tr >
+          <th scope="row">1</th>
+          <td>{{ data.get('Full_Name') }}</td>
+          <td>{{ data.get('County') }}</td>
+          <td>{{ data.get('Which_of_the_followi_should_spend_more_on') }}</td>
+          <td>{{ data.get('Please_select_an_app_a_you_selected_above') }}</td>
+          <td>{{ data.get('_geolocation') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <script>
+    // set map epicenter
+    var map = L.map('map').setView([-1.2921, 36.8219], 13);
+    // add tiles, api, token etc to pull maptiles
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+          maxZoom: 18,
+          id: 'mapbox/streets-v11',
+          tileSize: 512,
+          zoomOffset: -1,
+          accessToken: 'pk.eyJ1Ijoia2lwbmdldGljaDMzIiwiYSI6ImNqdWU1NDc3ZDBoYjQ0ZW9odHdqNzMybXMifQ.Zm_NuCEVU4UraKPMae29IQ'
+      }).addTo(map);
+    // now add markers here
+    var marker = L.marker([-1.2921, 36.8219]).addTo(map);
+    var marker = L.marker([-1.2922, 36.8213]).addTo(map);
+    
+    $( document ).ready(function() {
+        console.log( "ready!" );
+        $.ajax({url: "/ona_view", success: function(result){
+          console.log(result)
+        }});
+    }); 
+  </script>
 {% endblock %}
