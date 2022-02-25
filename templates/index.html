@@ -46,14 +46,24 @@
           accessToken: 'pk.eyJ1Ijoia2lwbmdldGljaDMzIiwiYSI6ImNqdWU1NDc3ZDBoYjQ0ZW9odHdqNzMybXMifQ.Zm_NuCEVU4UraKPMae29IQ'
       }).addTo(map);
     // now add markers here
-    var marker = L.marker([-1.2921, 36.8219]).addTo(map);
-    var marker = L.marker([-1.2922, 36.8213]).addTo(map);
-    
     $( document ).ready(function() {
         console.log( "ready!" );
-        $.ajax({url: "/ona_view", success: function(result){
-          console.log(result)
+        $.ajax({url: "/ona_data", success: function(response){
+          console.log(response)
+          process_response(response)
         }});
     }); 
+
+    function process_response(response){
+      var bounds = []
+      response.data.forEach(element => {
+        console.log(element._geolocation[0])
+        var marker = L.marker([element._geolocation[0],element._geolocation[1]]).addTo(map);
+        // add bounds to map
+        bounds.push([element._geolocation[0],element._geolocation[1]])
+      });
+      // now set maps bounds
+      map.fitBounds(bounds);
+    }
   </script>
 {% endblock %}
