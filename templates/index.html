@@ -59,11 +59,39 @@
       response.data.forEach(element => {
         console.log(element._geolocation[0])
         var marker = L.marker([element._geolocation[0],element._geolocation[1]]).addTo(map);
+        let popUpMessage = addPopInfo(element)
+        marker.bindPopup(popUpMessage).openPopup();
+        //add onhover functionality
+        marker.on('mouseover',function(ev) {
+          marker.openPopup();
+        });
         // add bounds to map
         bounds.push([element._geolocation[0],element._geolocation[1]])
       });
       // now set maps bounds
       map.fitBounds(bounds);
+    }
+
+    function addPopInfo(element){
+      let formated_message = "";
+      formated_message += `<b>Name :</b>${element.Full_Name} </br>`
+      formated_message += `<b> County :</b>${element.County} </br>`
+      formated_message += `Priority Program :${element.Which_of_the_followi_should_spend_more_on} </b>`
+      let priorityProgramBudget = "0%"; //initialize as zero
+      if(element.Please_select_an_app_a_you_selected_above == '10__or_less'){
+        priorityProgramBudget = "10% or less";
+      }else if(element.Please_select_an_app_a_you_selected_above == '25__or_less'){
+        priorityProgramBudget = "25% or less";
+      }else if(element.Please_select_an_app_a_you_selected_above == '35__or_less'){
+        priorityProgramBudget = "25% or less";
+      }else if(element.Please_select_an_app_a_you_selected_above == '50__or_less'){
+        priorityProgramBudget = "50% or less"
+      }else{
+        priorityProgramBudget = "More than 50%"
+      }
+      formated_message += `<b>Preffered Budget :</b>${priorityProgramBudget}`
+      // return the formated_message
+      return formated_message
     }
   </script>
 {% endblock %}
