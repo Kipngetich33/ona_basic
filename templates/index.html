@@ -1,9 +1,10 @@
 {% extends 'layout.html' %}
-
 {% block body %}
   <div class="jumbotron">
-    <h2>Customer Map</h2>
-    <div id="map" style="height: 400px;"></div>
+    <h2>Respondent's Map</h2>
+    <div class="loader" id="loader_div"></div>
+    <div id="map" style="height: 400px;">
+    </div>
   </div>
 
   <div class="jumbotron">
@@ -34,6 +35,7 @@
     </table>
   </div>
   <script>
+
     // set map epicenter
     var map = L.map('map').setView([-1.2921, 36.8219], 13);
     // add tiles, api, token etc to pull maptiles
@@ -45,11 +47,16 @@
           zoomOffset: -1,
           accessToken: 'pk.eyJ1Ijoia2lwbmdldGljaDMzIiwiYSI6ImNqdWU1NDc3ZDBoYjQ0ZW9odHdqNzMybXMifQ.Zm_NuCEVU4UraKPMae29IQ'
       }).addTo(map);
+
     // now add markers here
     $( document ).ready(function() {
         console.log( "ready!" );
+        //hide the map
+        document.getElementById("map").hidden = true;
         $.ajax({url: "/ona_data", success: function(response){
-          console.log(response)
+          //hide the loader and unhide map
+          document.getElementById("loader_div").hidden = true;
+          document.getElementById("map").hidden = false;
           process_response(response)
         }});
     }); 
@@ -57,7 +64,6 @@
     function process_response(response){
       var bounds = []
       response.data.forEach(element => {
-        console.log(element._geolocation[0])
         var marker = L.marker([element._geolocation[0],element._geolocation[1]]).addTo(map);
         let popUpMessage = addPopInfo(element)
         marker.bindPopup(popUpMessage).openPopup();
@@ -76,7 +82,7 @@
       let formated_message = "";
       formated_message += `<b>Name :</b>${element.Full_Name} </br>`
       formated_message += `<b> County :</b>${element.County} </br>`
-      formated_message += `Priority Program :${element.Which_of_the_followi_should_spend_more_on} </b>`
+      formated_message += `<b>Priority Program :</b>${element.Which_of_the_followi_should_spend_more_on} </br>`
       let priorityProgramBudget = "0%"; //initialize as zero
       if(element.Please_select_an_app_a_you_selected_above == '10__or_less'){
         priorityProgramBudget = "10% or less";
